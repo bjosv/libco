@@ -36,8 +36,7 @@ jobs:
         run: |
           ./test_args
           ./test_timing
-          # Temporary removed, segfaults on x86:
-          # ./test_serialization
+          ./test_serialization
       - name: Run valgrind
         working-directory: doc/examples
         run: |
@@ -75,9 +74,9 @@ jobs:
             ./build.sh
             ./test_args
             ./test_timing
-            # Temporary removed, segfault/fails:
+            ./test_serialization;
+            # Temporary removed, fails:
             if [ "$target" != "arm" ]; then
-              ./test_serialization;
               valgrind --error-exitcode=99 ./test_args
             fi
             # Temporary removed, very slow:
@@ -194,5 +193,4 @@ jobs:
           clang++ $FLAGS -o test_serialization libco.o test_serialization.o
           ./test_args
           ./test_timing
-          # Temporary removed, ASan don't like mmap() with MAP_FIXED
-          # ./test_serialization
+          ./test_serialization

@@ -81,9 +81,9 @@ auto main() -> int {
   }
 
   Memory::buffer = (uint8_t*)mmap(
-    (void*)0x10'0000'0000, 2 * 65536,
+    NULL, 2 * 65536,
     PROT_READ | PROT_WRITE | PROT_EXEC,
-    MAP_FIXED | MAP_PRIVATE | MAP_ANONYMOUS, -1, 0
+    MAP_PRIVATE | MAP_ANONYMOUS, -1, 0
   );
   Memory::buffer[0] = 42;
   printf("%p (%u)\n", Memory::buffer, Memory::buffer[0]);
@@ -112,6 +112,6 @@ auto main() -> int {
 
   Thread::cpu = nullptr;
   Thread::apu = nullptr;
-  munmap((void*)0x900000000, 2 * 65536);
+  munmap(Memory::buffer, 2 * 65536);
   return 0;
 }
