@@ -71,6 +71,9 @@ jobs:
             target: ${{ matrix.target }}
           run: |
             cd doc/examples
+            uname -a
+            lscpu
+            echo | cc -dM -E -
             ./build.sh
             ./test_args
             ./test_timing
@@ -79,6 +82,51 @@ jobs:
             if [ "$target" != "arm" ]; then
               valgrind --error-exitcode=99 ./test_args
             fi
+            # Temporary removed, very slow:
+            # valgrind --error-exitcode=99 ./test_timing
+            # Temporary removed, indicates issues
+            # valgrind --error-exitcode=99 ./test_serialization
+
+  build-qemu-ppc:
+    name: ppc.c attempts
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: ppc
+            arch: s390x
+            flags:
+    steps:
+      - uses: actions/checkout@v3
+      - uses: uraimo/run-on-arch-action@v2
+        with:
+          arch: ${{ matrix.arch }}
+          distro: ubuntu_latest
+          install: |
+            apt-get update -q -y
+            apt-get install -q -y --no-install-recommends build-essential
+          env: |
+            target: ${{ matrix.target }}
+          run: |
+            cd doc/examples
+            uname -a
+            lscpu
+            echo | cc -dM -E -
+            cc ${{ matrix.flags }} -I../.. -o libco.o -c ../../ppc.c
+            c++ ${{ matrix.flags }} -I../.. -c test_timing.cpp
+            c++ ${{ matrix.flags }} -o test_timing libco.o test_timing.o
+            c++ ${{ matrix.flags }} -I../.. -c test_args.cpp
+            c++ ${{ matrix.flags }} -o test_args libco.o test_args.o
+            c++ ${{ matrix.flags }} -I../.. -c test_serialization.cpp
+            c++ ${{ matrix.flags }} -o test_serialization libco.o test_serialization.o
+            ./test_args
+            # ./test_timing
+            # ./test_serialization;
+            # # Temporary removed, fails:
+            # if [ "$target" != "arm" ]; then
+            #   valgrind --error-exitcode=99 ./test_args
+            # fi
             # Temporary removed, very slow:
             # valgrind --error-exitcode=99 ./test_timing
             # Temporary removed, indicates issues
