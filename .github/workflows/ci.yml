@@ -131,10 +131,16 @@ jobs:
           # valgrind --error-exitcode=99 ./test_timing
 
   build-windows:
-    name: Windows (amd64)
+    name: Windows (${{ matrix.arch }})
     runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [amd64, x86]
     steps:
       - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.arch }}
       - uses: actions/checkout@v3
       - name: Build
         working-directory: doc/examples
