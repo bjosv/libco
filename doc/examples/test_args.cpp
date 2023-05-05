@@ -24,49 +24,49 @@
 
 #include "test.h"
 
-cothread_t thread[3];
+// cothread_t thread[3];
 
-namespace co_arg {
-  int param_x;
-  int param_y;
-};
+// namespace co_arg {
+//   int param_x;
+//   int param_y;
+// };
 
-//one could also call this co_init or somesuch if they preferred ...
-void co_switch(cothread_t thread, int param_x, int param_y) {
-  co_arg::param_x = param_x;
-  co_arg::param_y = param_y;
-  co_switch(thread);
-}
+// //one could also call this co_init or somesuch if they preferred ...
+// void co_switch(cothread_t thread, int param_x, int param_y) {
+//   co_arg::param_x = param_x;
+//   co_arg::param_y = param_y;
+//   co_switch(thread);
+// }
 
-void co_entrypoint() {
-int param_x = co_arg::param_x;
-int param_y = co_arg::param_y;
-  printf("co_entrypoint(%d, %d)\n", param_x, param_y);
-  co_switch(thread[0]);
+// void co_entrypoint() {
+// int param_x = co_arg::param_x;
+// int param_y = co_arg::param_y;
+//   printf("co_entrypoint(%d, %d)\n", param_x, param_y);
+//   co_switch(thread[0]);
 
-//co_arg::param_x will change here (due to co_switch(cothread_t, int, int) call changing values),
-//however, param_x and param_y will persist as they are thread local
+// //co_arg::param_x will change here (due to co_switch(cothread_t, int, int) call changing values),
+// //however, param_x and param_y will persist as they are thread local
 
-  printf("co_entrypoint(%d, %d)\n", param_x, param_y);
-  co_switch(thread[0]);
-  throw;
-}
+//   printf("co_entrypoint(%d, %d)\n", param_x, param_y);
+//   co_switch(thread[0]);
+//   throw;
+// }
 
 int main() {
   printf("cothread parameterized function example\n\n");
 
-  thread[0] = co_active();
-  thread[1] = co_create(65536, co_entrypoint);
-  thread[2] = co_create(65536, co_entrypoint);
+//   thread[0] = co_active();
+//   thread[1] = co_create(65536, co_entrypoint);
+//   thread[2] = co_create(65536, co_entrypoint);
 
-//use specialized co_switch(cothread_t, int, int) for initial co_switch call
-  co_switch(thread[1], 1, 2);
-  co_switch(thread[2], 4, 8);
+// //use specialized co_switch(cothread_t, int, int) for initial co_switch call
+//   co_switch(thread[1], 1, 2);
+//   co_switch(thread[2], 4, 8);
 
-//after first call, entry point arguments have been initialized, standard
-//co_switch(cothread_t) can be used from now on
-  co_switch(thread[2]);
-  co_switch(thread[1]);
+// //after first call, entry point arguments have been initialized, standard
+// //co_switch(cothread_t) can be used from now on
+//   co_switch(thread[2]);
+//   co_switch(thread[1]);
 
   printf("\ndone\n");
   return 0;

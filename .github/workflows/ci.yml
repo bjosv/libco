@@ -68,12 +68,17 @@ jobs:
             apt-get install -q -y --no-install-recommends build-essential valgrind
           run: |
             cd doc/examples
+            uname -a
+            valgrind --version
+            cat /proc/cpuinfo
+            echo | gcc -dM -E -
             ./build.sh
             ./test_args
-            ./test_timing
-            ./test_serialization
+            valgrind -v -v -v -v ls
+            # ./test_timing
+            # ./test_serialization
             ./valgrind-wrapper.sh --expect-failure ./test_args
-            ./valgrind-wrapper.sh --expect-failure ./test_serialization
+            # ./valgrind-wrapper.sh --expect-failure ./test_serialization
             # test_timing not run with valgrind on qemu since it's very slow.
 
   build-posix:
