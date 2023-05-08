@@ -19,6 +19,7 @@
     #include "ppc64v2.c"
   #elif defined(_ARCH_PPC) && !defined(__LITTLE_ENDIAN__)
     #include "ppc.c"
+    #warning "USING ppc.c"
   #elif defined(_WIN32)
     #include "fiber.c"
   #else
