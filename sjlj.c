@@ -13,10 +13,7 @@
 #include <signal.h>
 #include <setjmp.h>
 
-#if __has_include(<valgrind/valgrind.h>)
-  #include <valgrind/valgrind.h>
-  #define HAS_VALGRIND
-#endif
+#include <valgrind/valgrind.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -80,10 +77,8 @@ cothread_t co_derive(void* memory, unsigned int size, void (*coentry)(void)) {
       co_delete(thread);
       thread = 0;
     } else {
-#ifdef HAS_VALGRIND
       if (RUNNING_ON_VALGRIND)
         VALGRIND_STACK_REGISTER(stack.ss_sp, stack.ss_sp + size);
-#endif
     }
   }
 
@@ -125,10 +120,8 @@ cothread_t co_create(unsigned int size, void (*coentry)(void)) {
       co_delete(thread);
       thread = 0;
     } else {
-#ifdef HAS_VALGRIND
       if (RUNNING_ON_VALGRIND)
         VALGRIND_STACK_REGISTER(stack.ss_sp, stack.ss_sp + size);
-#endif
     }
   }
 
